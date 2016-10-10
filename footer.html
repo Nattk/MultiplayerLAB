@@ -1,0 +1,89 @@
+</div><!-- /container -->
+		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="js/classie.js"></script>
+		<script src="js/bpopup.js"></script>
+		<script>
+			(function() {
+				// trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+				if (!String.prototype.trim) {
+					(function() {
+						// Make sure we trim BOM and NBSP
+						var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+						String.prototype.trim = function() {
+							return this.replace(rtrim, '');
+						};
+					})();
+				}
+
+				[].slice.call( document.querySelectorAll( 'input.input__field' ) ).forEach( function( inputEl ) {
+					// in case the input is already filled..
+					if( inputEl.value.trim() !== '' ) {
+						classie.add( inputEl.parentNode, 'input--filled' );
+					}
+
+					// events:
+					inputEl.addEventListener( 'focus', onInputFocus );
+					inputEl.addEventListener( 'blur', onInputBlur );	
+					inputEl.addEventListener( 'blur', test );
+				} );
+
+				function onInputFocus( ev ) {
+					classie.add( ev.target.parentNode, 'input--filled' );
+				}
+
+				function onInputBlur( ev ) {
+					if( ev.target.value.trim() === '' ) {
+						classie.remove( ev.target.parentNode, 'input--filled' );
+					}
+				}
+				
+				function test() {
+				 console.log('entrer');
+				 $("#msgbox").removeClass().addClass('messagebox').text('Check en cours...').fadeIn("slow");
+				$.post("./libs/verif_login.php" ,{ login:$(this).val() } ,function(data){
+				 if(data=='no'){
+					  $("#msgbox").fadeTo(200,0.1,function(){
+					   $(this).html('Ce pseudo est déjà pris').addClass('busy').fadeTo(900,1);
+					   $("#inscript").submit( function(event) {
+							event.preventDefault();
+					   
+					   });
+				  });
+				 }else{
+					  $("#msgbox").fadeTo(200,0.1,function(){
+					   $(this).html('Ce pseudo est disponible').addClass('dispo').fadeTo(900,1);
+					 });
+				 }
+				});
+				}
+			})();
+			$("#inscription").click(function(){
+				$(".connexion").hide();
+				$(".inscription").show();
+			});	
+			$(window).ready(function() {
+				$(".inscription").hide();
+			});
+			function validateForm() {
+			    var x = document.forms["myForm"]["nb"].value;
+			    if (x == null || x == ""){
+			        alert("Veillez remplir les champs!!!");
+			        return false;
+			    }else if (x<2 || x>4){
+			    	alert("Nombre de joueur doit être entre 2 et 4!!!");
+			        return false;
+			    }
+				
+				var x1 = document.forms["myForm"]["taille"].value;
+			    if (x1 == null || x1 == ""){
+			        alert("Veillez remplir les champs!!!");
+			        return false;
+			    }else if (x1<5 || x1>25){
+			    	alert("La taille du labyrinthe doit être entre 5 et 25!!!");
+			        return false;
+			    }
+			}
+		
+		</script>
+	</body>
+</html>
